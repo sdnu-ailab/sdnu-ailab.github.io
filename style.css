@@ -1,4 +1,4 @@
-/* --- 全局变量和基本样式 --- */
+/* /* --- 全局变量和基本样式 --- */
 :root {
     --bg-dark: #0a0c10;
     --bg-light: #1a1d24;
@@ -195,4 +195,4 @@ body {
 
 .footer p {
     color: var(--text-muted);
-}
+} */
