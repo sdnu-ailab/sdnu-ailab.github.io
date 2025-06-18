@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI教学范式 - 交互式终端演示 (v7.1 最终修复版)</title>
+    <title>AI教学范式 - 交互式终端演示 (v9.0 最终完整版)</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -110,18 +110,23 @@
             let commandHistory = [];
             let historyIndex = -1;
             
-            // --- 状态控制变量 ---
             let inDsDemoMode = false;
             let dsQuicksortActive = false;
             let inChLitDemoMode = false;
             let chLitChibiFuActive = false;
 
-            // --- 响应数据库 ---
+            // --- 响应数据库 (完整版) ---
             const responses = {
-                 '1': [{ type: 'title', text: '加载中: (一) 多模态学科知识图谱框架' }, { type: 'normal', text: '核心思想：为特定学科构建一个统一的、多模态的知识框架。'} ],
-                 '2': [{ type: 'title', text: '加载中: (二) 检索增强的大语言模型生成范式' }, { type: 'normal', text: '核心思想：利用构建好的知识图谱，克服大语言模型的“幻觉”，提高生成内容的专业性和准确性。'}],
-                 
-                 // --- 数据结构案例 ---
+                 '1': [
+                    { type: 'title', text: '加载中: (一) 多模态学科知识图谱框架' }, 
+                    { type: 'normal', text: '核心思想：为特定学科（如数据结构）构建一个统一的、多模态的知识框架。'},
+                    { type: 'normal', text: `### 1. 构建基础框架\n- <span class="highlight">学科知识本体设计：</span>针对《数据结构》，设计包含“树”、“图”等核心概念的层次结构。\n- <span class="highlight">知识抽取：</span>利用大语言模型从教材中自动抽取实体关系，如“快速排序的时间复杂度是O(n log n)”。\n\n### 2. 多模态知识融合\n- <span class="highlight">知识表示：</span>研究将教材文本、实验图表、教学视频映射到统一向量空间。\n- <span class="highlight">实体对齐：</span>利用图神经网络，将视频中的动画片段与代码指令进行对齐。`}
+                 ],
+                 '2': [
+                    { type: 'title', text: '加载中: (二) 检索增强的大语言模型生成范式' }, 
+                    { type: 'normal', text: '核心思想：利用构建好的知识图谱，克服大语言模型的“幻觉”，提高生成内容的专业性和准确性。'},
+                    { type: 'normal', text: `### 1. 图检索增强生成 (GraphRAG)\n- <span class="highlight">图基索引与检索：</span>当用户提问时，能从图谱中检索到全面的知识上下文。\n- <span class="highlight">上下文感知生成：</span>将检索到的知识注入大语言模型，确保生成答案的准确性。\n\n### 2. 知识嵌入机制\n- <span class="highlight">引导与推理：</span>设计思维链提示，引导大模型进行步骤化推理。\n- <span class="highlight">动态演化：</span>构建增量学习框架，动态更新知识图谱，解决知识过时问题。`}
+                 ],
                  '3': [{ type: 'title', text: '加载中: (三) “数据结构”教学案例演示' }, { type: 'normal', text: '这是一个模拟场景，展示当学生向AI助教提问时，系统如何工作。' }, { type: 'help', text: '现在，请输入指令 <a>quicksort</a> 来模拟学生的提问。' }],
                  'quicksort': [
                     { type: 'normal', text: '接收到用户提问: "请用一个初学者能听懂的例子，解释一下什么是快速排序..."' }, 
@@ -130,15 +135,23 @@
                     { type: 'normal', text: '2. <span class="highlight">[知识整合]</span> 成功! 已获取多模态知识片段。'}, 
                     { type: 'normal', text: '3. <span class="highlight">[增强生成]</span> 成功! 将上下文注入大语言模型，开始生成回答...'}, 
                     { type: 'title', text: '--- AI助教生成结果 ---' }, 
-                    { type: 'normal', effect: 'typing', text: `当然！我们可以把<strong>快速排序</strong>想象成在一个班级里按身高排队。\n\n<strong>第一步：选个“基准” (Pivot)</strong>\n我们随便从队伍里拉一个同学出来，比如小明（身高175cm），让他当“基准”。\n\n<strong>第二步：分区 (Partition)</strong>\n比小明矮的站左边，比他高的站右边。操作结束后，小明的位置就固定了。\n\n<strong>第三步：递归 (Recursion)</strong>\n对左右两边的“小队伍”重复以上步骤，直到所有人都排好。\n\n<pre><code>def quick_sort(arr):\n    if len(arr) <= 1:\n        return arr\n    pivot = arr[len(arr) // 2]\n    left = [x for x in arr if x < pivot]\n    middle = [x for x in arr if x == pivot]\n    right = [x for x in arr if x > pivot]\n    return quick_sort(left) + middle + quick_sort(right)</code></pre>`},
+                    { 
+                        type: 'normal', 
+                        effect: 'typing', 
+                        text: `当然！我们可以把<strong>快速排序</strong>想象成在一个班级里按身高排队。\n\n<strong>第一步：选个“基准” (Pivot)</strong>\n我们随便从队伍里拉一个同学出来，比如小明（身高175cm），让他当“基准”。\n\n<strong>第二步：分区 (Partition)</strong>\n比小明矮的站左边，比他高的站右边。操作结束后，小明的位置就固定了。\n\n<strong>第三步：递归 (Recursion)</strong>\n对左右两边的“小队伍”重复以上步骤，直到所有人都排好。\n\n<pre><code>def quick_sort(arr):\n    if len(arr) <= 1:\n        return arr\n    pivot = arr[len(arr) // 2]\n    left = [x for x in arr if x < pivot]\n    middle = [x for x in arr if x == pivot]\n    right = [x for x in arr if x > pivot]\n    return quick_sort(left) + middle + quick_sort(right)\n\nprint(quick_sort([3, 6, 8, 10, 1, 2, 1]))\n# 输出: [1, 1, 2, 3, 6, 8, 10]</code></pre>`
+                    },
                     { type: 'help', text: '<span class="highlight">-> 请输入 <a>show image</a> 查看分区过程示意图。</span>'},
-                    { type: 'help', text: '<span class="highlight">-> 请输入 <a>compare complexity</a> 深入了解。</span>'}
+                    { type: 'help', text: '<span class="highlight">-> 请输入 <a>show video</a> 查看递归动画演示。</span>'},
+                    { type: 'help', text: '<span class="highlight">-> 思考题：如果数组已经有序，快排效率如何？输入 <a>compare complexity</a> 深入了解。</span>'}
                  ],
-                 'compare complexity': [{ type: 'title', text: '知识深化：快速排序的复杂度' }, { type: 'normal', text: '这是一个非常好的问题！如果对一个<span class="highlight">已经有序</span>的数组使用基础的快速排序，时间复杂度会退化到 **O(n²)**。'}],
+                 'compare complexity': [
+                    { type: 'title', text: '知识深化：快速排序的复杂度' }, 
+                    { type: 'normal', text: '这是一个非常好的问题，触及了快速排序的关键弱点！' },
+                    { type: 'normal', text: `如果对一个<span class="highlight">已经有序</span>（或接近有序）的数组使用基础的快速排序（比如总是选第一个或最后一个元素作基准），会发生<span class="highlight">最坏情况</span>。\n\n每次分区，都会导致一个子数组为空，另一个子数组只比原来少一个元素。这使得递归树变成一条长链，深度为n，失去了分治的优势。\n\n因此，最坏情况下的时间复杂度会退化到 **O(n²)**，和冒泡排序一样慢。\n\n为了解决这个问题，实际应用中的快速排序会采用“三数取中”或“随机选取基准”等策略来避免最坏情况的发生。`}
+                 ],
                  'show image': [{ type: 'normal', text: '正在打开示意图...' }],
                  'show video': [{ type: 'normal', text: '正在加载演示视频...' }],
 
-                 // --- 大学语文案例 ---
                  '4': [{ type: 'title', text: '加载中: (四) “大学语文”教学案例演示' }, { type: 'normal', text: '此场景将演示AI助教如何分析古典文学中的哲学思想。' }, { type: 'help', text: '现在，请输入指令 <a>chibifu</a> 来提问关于《前赤壁赋》的核心思想。' }],
                  'chibifu': [
                     { type: 'normal', text: '接收到用户提问: "请分析苏轼《前赤壁赋》中\'变\'与\'不变\'的哲学思想..."' },
@@ -153,24 +166,19 @@
                     { type: 'help', text: '<span class="highlight">-> 请输入 <a>play music</a> 聆听主题古琴曲。</span>' },
                     { type: 'help', text: '<span class="highlight">-> 思考题：结合苏轼生平，这种人生观对他有何影响？输入 <a>discuss impact</a> 查看分析。</span>' }
                  ],
-                 'show text': [
-                    { type: 'title', text: '《前赤壁赋》核心原文' },
-                    { type: 'normal', text: `<pre><code>客亦知夫水与月乎？\n逝者如斯，而未尝往也；\n盈虚者如彼，而卒莫消长也。\n盖将自其变者而观之，则天地曾不能以一瞬；\n自其不变者而观之，则物与我皆无尽也。</code></pre>` }
-                 ],
+                 'show text': [ { type: 'title', text: '《前赤壁赋》核心原文' }, { type: 'normal', text: `<pre><code>客亦知夫水与月乎？\n逝者如斯，而未尝往也；\n盈虚者如彼，而卒莫消长也。\n盖将自其变者而观之，则天地曾不能以一瞬；\n自其不变者而观之，则物与我皆无尽也。</code></pre>` } ],
                  'show painting': [{ type: 'normal', text: '正在打开《赤壁赋》相关画作...' }],
                  'play music': [{ type: 'normal', text: '模拟播放古琴曲《秋江夜泊》，营造《赤壁赋》的宁静与旷远意境...' }],
-                 'discuss impact': [
-                    { type: 'title', text: '知识深化：人生观对苏轼的影响' },
-                    { type: 'normal', text: '这个问题非常关键！这种“变与不变”的旷达人生观，是苏轼屡遭贬谪而依然能创作出大量优秀作品的<span class="highlight">精神支柱</span>。\n\n它让苏轼能够：\n1.  <strong>超越个人得失</strong>：将个人的不幸置于广阔的宇宙时空中，从而获得释然。\n2.  <strong>随缘自适</strong>：无论身处何地，都能发现生活中的美好与乐趣，即“随所遇而安”。\n3.  <strong>保持积极乐观</strong>：即使在政治上屡受打击，依然能保持豪放豁达的胸襟和对生活的热爱。' }
-                 ],
-                 
-                 // --- 通用指令 ---
-                 'help': [
-                    { type: 'help', text: '通用指令:' },
-                    { type: 'help', text: '- <a>1</a> / <a>2</a> : 查看核心研究方向'},
-                    { type: 'help', text: '- <a>3</a> : 进入“数据结构”案例'},
-                    { type: 'help', text: '- <a>4</a> : 进入“大学语文”案例'},
-                    { type: 'help', text: '- <a>clear</a> / <a>help</a> : 清屏 / 显示帮助'}
+                 'discuss impact': [ 
+                    { type: 'title', text: '知识深化：人生观对苏轼的影响' }, 
+                    { type: 'normal', text: '这个问题非常关键！这种“变与不变”的旷达人生观，是苏轼屡遭贬谪而依然能创作出大量优秀作品的<span class="highlight">精神支柱</span>。\n\n它让苏轼能够：\n1.  <strong>超越个人得失</strong>：将个人的不幸置于广阔的宇宙时空中，从而获得释然。\n2.  <strong>随缘自适</strong>：无论身处何地，都能发现生活中的美好与乐趣，即“随所遇而安”。\n3.  <strong>保持积极乐观</strong>：即使在政治上屡受打击，依然能保持豪放豁达的胸襟和对生活的热爱。' 
+                 } ],
+                 'help': [ 
+                    { type: 'help', text: '通用指令:' }, 
+                    { type: 'help', text: '- <a>1</a> / <a>2</a> : 查看核心研究方向'}, 
+                    { type: 'help', text: '- <a>3</a> : 进入“数据结构”案例'}, 
+                    { type: 'help', text: '- <a>4</a> : 进入“大学语文”案例'}, 
+                    { type: 'help', text: '- <a>clear</a> / <a>help</a> : 清屏 / 显示帮助'} 
                  ]
             };
 
@@ -183,27 +191,20 @@
                     navigator.clipboard.writeText(codeToCopy).then(() => {
                         copyBtn.innerText = '已复制!';
                         copyBtn.classList.add('copied');
-                        setTimeout(() => {
-                            copyBtn.innerText = '复制';
-                            copyBtn.classList.remove('copied');
-                        }, 2000);
+                        setTimeout(() => { copyBtn.innerText = '复制'; copyBtn.classList.remove('copied'); }, 2000);
                     });
                 });
                 codeBlock.appendChild(copyBtn);
             };
             
             const typeEffect = (element, html, onComplete) => {
-                let i = 0;
-                const speed = 20;
-                const tempDiv = document.createElement('div');
-                tempDiv.innerHTML = html;
+                let i = 0; const speed = 20;
+                const tempDiv = document.createElement('div'); tempDiv.innerHTML = html;
                 const text = tempDiv.textContent || tempDiv.innerText || "";
                 element.innerHTML = "";
-                
                 function typing() {
                     if (i < text.length) {
-                        element.innerHTML += text.charAt(i);
-                        i++;
+                        element.innerHTML += text.charAt(i); i++;
                         terminalOutput.scrollTop = terminalOutput.scrollHeight;
                         setTimeout(typing, speed);
                     } else {
@@ -221,13 +222,7 @@
                     const { text, type = 'normal', effect } = lineInfo;
                     const line = document.createElement('div');
                     line.classList.add('line', 'system-output', type);
-                    
-                    const html = text.replace(/<a>(.*?)<\/a>/g, '<a href="#" class="cmd-link">$1</a>')
-                                     .replace(/### (.*$)/gim, '<h3>$1</h3>')
-                                     .replace(/## (.*$)/gim, '<h2>$1</h2>')
-                                     .replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>')
-                                     .replace(/^\s*[-*] (.*$)/gim, '<li>$1</li>');
-
+                    const html = text.replace(/<a>(.*?)<\/a>/g, '<a href="#" class="cmd-link">$1</a>').replace(/### (.*$)/gim, '<h3>$1</h3>').replace(/## (.*$)/gim, '<h2>$1</h2>').replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>').replace(/^\s*[-*] (.*$)/gim, '<li>$1</li>');
                     if (effect === 'typing') {
                         terminalOutput.appendChild(line);
                         typeEffect(line, html, resolve);
@@ -244,7 +239,6 @@
 
             async function executeCommand(command) {
                 if (!command) return;
-
                 const userInputLine = document.createElement('div');
                 userInputLine.classList.add('line', 'user-input');
                 userInputLine.textContent = command;
@@ -253,10 +247,7 @@
                     commandHistory.push(command);
                 }
                 historyIndex = commandHistory.length;
-                
                 const cmd = command.toLowerCase().trim();
-
-                // --- 严格顺序的指令守卫 ---
                 if (cmd === 'quicksort' && !inDsDemoMode) {
                     await printLine({ text: '请先输入指令 <a>3</a> 进入“数据结构”案例。', type: 'error' });
                     commandInput.value = ''; return;
@@ -273,26 +264,20 @@
                     await printLine({ text: '请先在“大学语文”案例中运行 <a>chibifu</a>。', type: 'error' });
                     commandInput.value = ''; return;
                 }
-                
-                // --- 状态重置 ---
                 const contextResettingCommands = ['1', '2', '3', '4', 'help', 'clear'];
                 if (contextResettingCommands.includes(cmd)) {
                     inDsDemoMode = false; dsQuicksortActive = false;
                     inChLitDemoMode = false; chLitChibiFuActive = false;
                 }
-
                 commandInput.value = '';
                 commandInput.disabled = true;
-
                 const thinkingIndicator = document.createElement('div');
                 thinkingIndicator.className = 'line thinking-indicator';
                 thinkingIndicator.innerHTML = '<div class="spinner"></div>正在思考...';
                 terminalOutput.appendChild(thinkingIndicator);
-                await new Promise(res => setTimeout(res, 500 + Math.random() * 500));
+                await new Promise(res => setTimeout(res, 300 + Math.random() * 300));
                 thinkingIndicator.remove();
-
                 const responseLines = responses[cmd];
-                
                 if (cmd === 'clear') {
                     terminalOutput.innerHTML = '';
                 } else if (responseLines) {
@@ -302,17 +287,13 @@
                     if (cmd === 'show image') showModal('image', dsImageUrl);
                     if (cmd === 'show video') showModal('video', dsVideoUrl);
                     if (cmd === 'show painting') showModal('image', chLitImageUrl);
-                    
-                    // --- 状态设置 ---
                     if (cmd === '3') inDsDemoMode = true;
                     if (cmd === 'quicksort') dsQuicksortActive = true;
                     if (cmd === '4') inChLitDemoMode = true;
                     if (cmd === 'chibifu') chLitChibiFuActive = true;
-
                 } else {
                     await printLine({ text: `指令 "${command}" 未找到。请输入 <a href="#" class="cmd-link">help</a> 查看可用指令。`, type: 'error' });
                 }
-                
                 commandInput.disabled = false;
                 commandInput.focus();
             }
@@ -321,7 +302,6 @@
                 mediaModal.classList.add('visible');
                 modalImage.style.display = 'none';
                 modalVideo.style.display = 'none';
-
                 if (type === 'image') {
                     modalImage.style.display = 'block';
                     modalImage.src = url;
@@ -331,9 +311,7 @@
                     modalVideo.play();
                 }
             };
-
             const closeModal = () => { mediaModal.classList.remove('visible'); modalVideo.pause(); };
-
             const updateCaretPosition = () => {
                 const tempSpan = document.createElement('span');
                 tempSpan.style.font = window.getComputedStyle(commandInput).font;
@@ -344,9 +322,7 @@
                 caret.style.transform = `translateX(${textWidth}px)`;
             };
 
-            // --- 事件监听器 ---
             executeBtn.addEventListener('click', () => executeCommand(commandInput.value));
-            
             commandInput.addEventListener('keydown', e => {
                 if (e.key === 'Enter') {
                     executeCommand(commandInput.value);
@@ -369,7 +345,6 @@
                     }
                 }
             });
-
             terminalOutput.addEventListener('click', e => {
                 const targetLink = e.target.closest('.cmd-link');
                 if (targetLink) {
@@ -379,17 +354,15 @@
                     executeCommand(cmdText);
                 }
             });
-            
             modalCloseBtn.addEventListener('click', closeModal);
             mediaModal.addEventListener('click', e => { if (e.target === mediaModal) closeModal(); });
             commandInput.addEventListener('input', () => { historyIndex = commandHistory.length; updateCaretPosition(); });
             commandInput.addEventListener('keyup', updateCaretPosition);
             commandInput.addEventListener('click', updateCaretPosition);
 
-            // --- 初始化 ---
             async function init() {
-                await printLine({ text: 'AI 教学系统终端 // 版本 v7.1 (Dual-Case Stable)', type: 'title'});
-                await printLine({ text: '系统已稳定运行，支持双教学案例。', type: 'normal' });
+                await printLine({ text: 'AI 教学系统终端 // 版本 v9.0 (完整版)', type: 'title'});
+                await printLine({ text: '系统已稳定运行，所有功能和文本已完全恢复。', type: 'normal' });
                 await printLine({ text: '请输入 <a>help</a> 查看所有可用指令。', type: 'help' });
                 commandInput.focus();
             }
