@@ -3,97 +3,360 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>   AI Lab - 人工智能实验室</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <title>AI教学范式 - 交互式终端演示 (带媒体)</title>
+    <style>
+        :root {
+            --bg-terminal: #111827;
+            --text-color: #e5e7eb;
+            --prompt-color: #4ade80;
+            --output-color: #7dd3fc;
+            --border-color: #4b5563;
+        }
+        * { box-sizing: border-box; }
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+            background-color: var(--bg-terminal);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+        }
+        .terminal {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .line {
+            margin-bottom: 8px;
+            white-space: pre-wrap;
+            line-height: 1.5;
+            opacity: 0;
+            animation: fadeIn 0.5s forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .line.user-input::before {
+            content: '> ';
+            color: var(--prompt-color);
+        }
+        .line.system-output {
+            color: var(--text-color);
+        }
+        .line.system-output.title {
+            color: #fde047;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        .line.system-output.help {
+            color: #93c5fd;
+        }
+        .line .highlight {
+            color: var(--output-color);
+            font-weight: bold;
+        }
+        .input-area {
+            display: flex;
+            padding: 10px 20px;
+            background-color: #1f2937;
+            border-top: 1px solid var(--border-color);
+        }
+        .input-area-prompt {
+            color: var(--prompt-color);
+            font-size: 1em;
+            margin-right: 10px;
+            line-height: 40px;
+        }
+        #commandInput {
+            flex-grow: 1;
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-family: inherit;
+            font-size: 1em;
+        }
+        #commandInput:focus {
+            outline: none;
+        }
+        #executeBtn {
+            background-color: var(--prompt-color);
+            color: #111827;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        pre {
+            background-color: #000;
+            padding: 15px;
+            border-radius: 5px;
+            border-left: 3px solid #818cf8;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        /* --- 新增：媒体弹出窗口样式 --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        .modal-overlay.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal-content {
+            position: relative;
+            background-color: #1f2937;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 90%;
+            max-height: 90%;
+        }
+        .modal-content img, .modal-content video {
+            max-width: 100%;
+            max-height: 80vh;
+            display: none; /* 默认都隐藏 */
+        }
+        .modal-close-btn {
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            width: 35px;
+            height: 35px;
+            background-color: #fff;
+            color: #000;
+            border-radius: 50%;
+            border: none;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            line-height: 1;
+        }
+    </style>
 </head>
 <body>
-
-    <header class="header">
-        <div class="container">
-            <div class="logo">
-                <a href="#">  AI Lab</a>
-            </div>
-            <nav class="main-nav">
-                <ul>
-                    <li><a href="#hero">首页</a></li>
-                    <li><a href="#research">研究方向</a></li>
-                    <li><a href="#team">核心团队</a></li>
-                    <li><a href="#publications">学术成果</a></li>
-                </ul>
-            </nav>
+    <div class="terminal" id="terminalOutput">
         </div>
-    </header>
+    <div class="input-area">
+        <span class="input-area-prompt">&gt;</span>
+        <input type="text" id="commandInput" placeholder="输入指令后按 Enter..." autofocus>
+        <button id="executeBtn">执行</button>
+    </div>
 
-    <main>
-        <section id="hero" class="hero-section">
-            <div class="container">
-                <h1>探索智能前沿，共创未来科技</h1>
-                <p class="subtitle">人工智能实验室致力于基础理论研究与前沿技术创新</p>
-                <a href="#research" class="cta-button">了解更多</a>
-            </div>
-        </section>
-
-        <section id="research" class="research-section">
-            <div class="container">
-                <h2 class="section-title">主要研究方向</h2>
-                <div class="cards-grid">
-                    <div class="card">
-                        <h3>机器学习与深度学习</h3>
-                        <p>探索先进的算法模型，应用于计算机视觉、自然语言处理等领域。</p>
-                    </div>
-                    <div class="card">
-                        <h3>计算机视觉</h3>
-                        <p>专注于图像识别、目标检测、三维重建和视频分析等核心技术。</p>
-                    </div>
-                    <div class="card">
-                        <h3>自然语言处理</h3>
-                        <p>研究机器翻译、情感分析、智能问答和对话系统的前沿理论。</p>
-                    </div>
-                    <div class="card">
-                        <h3>强化学习与机器人</h3>
-                        <p>将强化学习应用于机器人控制与决策，实现更高级别的自主智能。</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="team" class="team-section">
-            <div class="container">
-                <h2 class="section-title">核心团队</h2>
-                <div class="cards-grid">
-                    <div class="card team-card">
-                        <div class="team-photo-placeholder"></div>
-                        <h4>教授</h4>
-                        <p>实验室主任，研究方向：机器学习</p>
-                    </div>
-                    <div class="card team-card">
-                        <div class="team-photo-placeholder"></div>
-                        <h4>副教授</h4>
-                        <p>核心成员，研究方向：计算机视觉</p>
-                    </div>
-                    <div class="card team-card">
-                        <div class="team-photo-placeholder"></div>
-                        <h4>博士</h4>
-                        <p>核心成员，研究方向：自然语言处理</p>
-                    </div>
-                     <div class="card team-card">
-                        <div class="team-photo-placeholder"></div>
-                        <h4>博士</h4>
-                        <p>核心成员，研究方向：强化学习</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <footer class="footer">
-        <div class="container">
-            <p>&copy; 2025 AI Lab. All Rights Reserved.</p>
+    <div class="modal-overlay" id="mediaModal">
+        <div class="modal-content">
+            <button class="modal-close-btn" id="modalCloseBtn">&times;</button>
+            <img id="modalImage" src="" alt="示意图">
+            <video id="modalVideo" src="" controls></video>
         </div>
-    </footer>
+    </div>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const terminalOutput = document.getElementById('terminalOutput');
+            const commandInput = document.getElementById('commandInput');
+            const executeBtn = document.getElementById('executeBtn');
+            const mediaModal = document.getElementById('mediaModal');
+            const modalImage = document.getElementById('modalImage');
+            const modalVideo = document.getElementById('modalVideo');
+            const modalCloseBtn = document.getElementById('modalCloseBtn');
+            
+            // --- 关键配置：请在这里替换成您的媒体文件路径 ---
+            const imageUrl = 'partition_diagram.png'; // <-- 替换成您的图片文件名或网址
+            const videoUrl = 'recursion_animation.mp4'; // <-- 替换成您的视频文件名或网址
+            // ---------------------------------------------------
+
+            const responses = {
+                '1': [
+                    { type: 'title', text: '正在加载: (一) 基于教学概念的多模态学科知识图谱框架构建' },
+                    { type: 'normal', text: '核心思想：为特定学科（如数据结构）构建一个统一的、多模态的知识框架。'},
+                    { type: 'normal', text: `
+### 1. 构建基础框架
+- <span class="highlight">学科知识本体设计：</span>针对《数据结构》，设计包含“树”、“图”等核心概念的层次结构。
+- <span class="highlight">知识抽取：</span>利用大语言模型从教材中自动抽取实体关系，如“快速排序的时间复杂度是O(n log n)”。
+
+### 2. 多模态知识融合
+- <span class="highlight">知识表示：</span>研究将教材文本、实验图表、教学视频映射到统一向量空间。
+- <span class="highlight">实体对齐：</span>利用图神经网络，将视频中的动画片段与代码指令进行对齐。
+                    `}
+                ],
+                '2': [
+                    { type: 'title', text: '正在加载: (二) 基于学科知识图检索增强的大语言模型生成范式' },
+                    { type: 'normal', text: '核心思想：利用构建好的知识图谱，克服大语言模型的“幻觉”，提高生成内容的专业性和准确性。'},
+                    { type: 'normal', text: `
+### 1. 图检索增强生成 (GraphRAG)
+- <span class="highlight">图基索引与检索：</span>当用户提问时，能从图谱中检索到全面的知识上下文。
+- <span class="highlight">上下文感知生成：</span>将检索到的知识注入大语言模型，确保生成答案的准确性。
+
+### 2. 知识嵌入机制
+- <span class="highlight">引导与推理：</span>设计思维链提示，引导大模型进行步骤化推理。
+- <span class="highlight">动态演化：</span>构建增量学习框架，动态更新知识图谱，解决知识过时问题。
+                    `}
+                ],
+                '3': [
+                    { type: 'title', text: '正在加载: (三) “数据结构”教学案例演示' },
+                    { type: 'normal', text: '这是一个模拟场景，展示当学生向AI助教提问时，系统如何工作。' },
+                    { type: 'help', text: '现在，请输入指令 "quicksort" 来模拟学生的提问。' }
+                ],
+                'quicksort': [
+                    { type: 'normal', text: '接收到用户提问: "请用一个初学者能听懂的例子，解释一下什么是快速排序..."' },
+                    { type: 'normal', text: '<span class="highlight">GraphRAG 系统启动...</span>'},
+                    { type: 'normal', text: '1. <span class="highlight">[图检索]</span> 成功! 在“数据结构”知识图谱中检索到“快速排序”相关节点。'},
+                    { type: 'normal', text: '2. <span class="highlight">[知识整合]</span> 成功! 已获取“基准值”、“分区操作”的文本定义、分区过程示意图、递归动画等4个多模态知识片段。'},
+                    { type: 'normal', text: '3. <span class="highlight">[增强生成]</span> 成功! 将上下文注入大语言模型，开始生成回答...'},
+                    { type: 'title', text: '--- AI助教生成结果 ---' },
+                    { type: 'normal', text: `
+当然！我们可以把<strong>快速排序</strong>想象成在一个班级里按身高排队。
+
+<strong>第一步：选个“基准” (Pivot)</strong>
+我们随便从队伍里拉一个同学出来，比如小明（身高175cm），让他当“基准”。
+
+<strong>第二步：分区 (Partition)</strong>
+比小明矮的站左边，比他高的站右边。操作结束后，小明的位置就固定了。
+
+<strong>第三步：递归 (Recursion)</strong>
+对左右两边的“小队伍”重复以上步骤，直到所有人都排好。
+
+<span class="highlight">-> 请输入 "show image" 查看分区过程示意图。</span>
+<span class="highlight">-> 请输入 "show video" 查看递归动画演示。</span>
+
+<pre><code>def quick_sort(arr):
+    if len(arr) <= 1:
+        return arr
+    pivot = arr[len(arr) // 2]
+    left = [x for x in arr if x < pivot]
+    middle = [x for x in arr if x == pivot]
+    right = [x for x in arr if x > pivot]
+    return quick_sort(left) + middle + quick_sort(right)
+
+print(quick_sort([3, 6, 8, 10, 1, 2, 1]))
+# 输出: [1, 1, 2, 3, 6, 8, 10]</code></pre>
+                    `}
+                ],
+                'show image': [ { type: 'normal', text: '正在打开示意图...' } ],
+                'show video': [ { type: 'normal', text: '正在加载演示视频...' } ],
+                'help': [
+                    { type: 'help', text: '可用指令:' },
+                    { type: 'help', text: '- <span class="highlight">1</span> : 显示“研究方向一：知识图谱构建”'},
+                    { type: 'help', text: '- <span class="highlight">2</span> : 显示“研究方向二：检索增强生成”'},
+                    { type: 'help', text: '- <span class="highlight">3</span> : 进入“案例演示”环节'},
+                    { type: 'help', text: '- <span class="highlight">quicksort</span> : (在案例演示环节) 模拟学生提问'},
+                    { type: 'help', text: '- <span class="highlight">show image</span> : (在quicksort后) 显示示意图'},
+                    { type: 'help', text: '- <span class="highlight">show video</span> : (在quicksort后) 显示演示视频'},
+                    { type: 'help', text: '- <span class="highlight">clear</span> : 清空屏幕'},
+                    { type: 'help', text: '- <span class="highlight">help</span> : 显示此帮助信息'}
+                ]
+            };
+            
+            function printLine(text, type = 'normal', delay = 0) {
+                return new Promise(resolve => {
+                    setTimeout(() => {
+                        const line = document.createElement('div');
+                        line.classList.add('line', `system-output`, type);
+                        let html = text.replace(/### (.*$)/gim, '<h3>$1</h3>').replace(/## (.*$)/gim, '<h2>$1</h2>').replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>').replace(/^\s*[-*] (.*$)/gim, '<li>$1</li>');
+                        line.innerHTML = html;
+                        terminalOutput.appendChild(line);
+                        terminalOutput.scrollTop = terminalOutput.scrollHeight;
+                        resolve();
+                    }, delay);
+                });
+            }
+
+            async function executeCommand(command) {
+                const userInputLine = document.createElement('div');
+                userInputLine.classList.add('line', 'user-input');
+                userInputLine.textContent = command;
+                terminalOutput.appendChild(userInputLine);
+
+                const cmd = command.toLowerCase();
+                const responseLines = responses[cmd];
+
+                if (cmd === 'clear') {
+                    terminalOutput.innerHTML = '';
+                    commandInput.value = '';
+                    return;
+                }
+
+                if (responseLines) {
+                    for (let i = 0; i < responseLines.length; i++) {
+                        await printLine(responseLines[i].text, responseLines[i].type, i === 0 ? 0 : 300);
+                    }
+                    if (cmd === 'show image') {
+                        showModal('image');
+                    } else if (cmd === 'show video') {
+                        showModal('video');
+                    }
+                } else {
+                    await printLine(`指令 "${command}" 未找到。请输入 "help" 查看可用指令。`, 'help');
+                }
+                
+                commandInput.value = '';
+                terminalOutput.scrollTop = terminalOutput.scrollHeight;
+            }
+
+            function showModal(type) {
+                if (type === 'image') {
+                    modalImage.style.display = 'block';
+                    modalVideo.style.display = 'none';
+                    modalImage.src = imageUrl;
+                } else if (type === 'video') {
+                    modalImage.style.display = 'none';
+                    modalVideo.style.display = 'block';
+                    modalVideo.src = videoUrl;
+                    modalVideo.play();
+                }
+                mediaModal.classList.add('visible');
+            }
+
+            function closeModal() {
+                mediaModal.classList.remove('visible');
+                modalVideo.pause(); // 关闭时暂停视频播放
+            }
+
+            executeBtn.addEventListener('click', () => {
+                const command = commandInput.value;
+                if (command.trim() !== '') executeCommand(command);
+            });
+
+            commandInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    const command = commandInput.value;
+                    if (command.trim() !== '') executeCommand(command);
+                }
+            });
+            
+            modalCloseBtn.addEventListener('click', closeModal);
+            mediaModal.addEventListener('click', (e) => {
+                if (e.target === mediaModal) closeModal(); // 点击背景关闭
+            });
+
+            async function init() {
+                await printLine('AI 智能教学系统终端已启动...', 'title', 0);
+                await printLine('这是一个交互式演示，用于展示“人工智能+高等教育”的应用场景。', 'normal', 500);
+                await printLine('请输入 "help" 查看所有可用指令。', 'help', 1000);
+            }
+            
+            init();
+        });
+    </script>
 </body>
 </html>
