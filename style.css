@@ -1,0 +1,198 @@
+/* --- 全局变量和基本样式 --- */
+:root {
+    --bg-dark: #0a0c10;
+    --bg-light: #1a1d24;
+    --primary-color: #00f6ff;
+    --secondary-color: #9747ff;
+    --text-color: #e0e0e0;
+    --text-muted: #888;
+    --border-color: rgba(0, 246, 255, 0.2);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Poppins', 'Microsoft YaHei', sans-serif;
+    background-color: var(--bg-dark);
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* --- 头部和导航 --- */
+.header {
+    background: rgba(10, 12, 16, 0.8);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border-color);
+    padding: 15px 0;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+}
+
+.header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo a {
+    text-decoration: none;
+    color: var(--primary-color);
+    font-size: 1.8rem;
+    font-weight: 700;
+    text-shadow: 0 0 10px var(--primary-color);
+}
+
+.main-nav ul {
+    list-style: none;
+    display: flex;
+}
+
+.main-nav ul li {
+    margin-left: 30px;
+}
+
+.main-nav a {
+    text-decoration: none;
+    color: var(--text-color);
+    font-weight: 400;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.main-nav a:hover {
+    color: var(--primary-color);
+    text-shadow: 0 0 5px var(--primary-color);
+}
+
+/* --- 主视觉区域 (Hero Section) --- */
+.hero-section {
+    padding-top: 180px;
+    padding-bottom: 120px;
+    text-align: center;
+    background: linear-gradient(rgba(10, 12, 16, 0.8), var(--bg-dark)), url('https://www.transparenttextures.com/patterns/cubes.png');
+    background-size: cover;
+}
+
+.hero-section h1 {
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: #fff;
+    text-shadow: 0 0 15px var(--primary-color), 0 0 25px var(--secondary-color);
+    margin-bottom: 20px;
+}
+
+.hero-section .subtitle {
+    font-size: 1.2rem;
+    max-width: 600px;
+    margin: 0 auto 40px;
+    color: var(--text-muted);
+}
+
+.cta-button {
+    display: inline-block;
+    background: transparent;
+    border: 2px solid var(--primary-color);
+    color: var(--primary-color);
+    padding: 12px 30px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.cta-button:hover {
+    background: var(--primary-color);
+    color: var(--bg-dark);
+    box-shadow: 0 0 20px var(--primary-color);
+}
+
+/* --- 通用区块样式 --- */
+.research-section, .team-section {
+    padding: 80px 0;
+}
+
+.section-title {
+    text-align: center;
+    font-size: 2.5rem;
+    font-weight: 600;
+    margin-bottom: 60px;
+    color: #fff;
+}
+
+/* --- 卡片网格布局 --- */
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+}
+
+.card {
+    background: var(--bg-light);
+    padding: 30px;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 30px rgba(0, 246, 255, 0.1);
+}
+
+.card h3 {
+    color: var(--primary-color);
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+}
+
+/* --- 团队部分特殊样式 --- */
+.team-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.team-photo-placeholder {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background-color: #333;
+    border: 3px solid var(--secondary-color);
+    margin-bottom: 20px;
+}
+
+.team-card h4 {
+    color: #fff;
+    font-size: 1.2rem;
+    margin-bottom: 5px;
+}
+
+/* --- 页脚 --- */
+.footer {
+    background: var(--bg-light);
+    text-align: center;
+    padding: 20px 0;
+    margin-top: 60px;
+    border-top: 1px solid var(--border-color);
+}
+
+.footer p {
+    color: var(--text-muted);
+}
