@@ -64,7 +64,7 @@
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; z-index: 2000; opacity: 0; visibility: hidden; transition: all 0.4s ease; background-color: rgba(248, 250, 252, 0.5); backdrop-filter: blur(8px); }
         .modal-overlay.visible { opacity: 1; visibility: visible; }
         .modal-content { position: relative; background-color: rgba(255, 255, 255, 0.8); padding: 20px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.9); max-width: 90%; max-height: 90%; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-        .modal-content img, .modal-content video { max-width: 100%; max-height: 80vh; display: none; border-radius: 4px; }
+        .modal-content img, .modal-content video, .modal-content iframe { max-width: 100%; max-height: 80vh; display: none; border-radius: 4px; }
         .modal-close-btn { position: absolute; top: -15px; right: -15px; width: 35px; height: 35px; background-color: var(--text-color); color: #ffffff; border-radius: 50%; border: 2px solid #fff; font-size: 20px; font-weight: bold; cursor: pointer; display: flex; justify-content: center; align-items: center; line-height: 1; transition: transform 0.2s ease; }
         .modal-close-btn:hover { transform: scale(1.1) rotate(90deg); }
     </style>
@@ -87,6 +87,7 @@
             <button class="modal-close-btn" id="modalCloseBtn">×</button>
             <img id="modalImage" src="" alt="示意图">
             <video id="modalVideo" src="" controls></video>
+            <iframe id="modalIframe" src="" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true" style="display: none; width: 80vw; height: 45vw; max-width: 1280px; max-height: 720px;"></iframe>
         </div>
     </div>
 
@@ -99,12 +100,13 @@
             const mediaModal = document.getElementById('mediaModal');
             const modalImage = document.getElementById('modalImage');
             const modalVideo = document.getElementById('modalVideo');
+            const modalIframe = document.getElementById('modalIframe');
             const modalCloseBtn = document.getElementById('modalCloseBtn');
             const caret = document.querySelector('.blinking-caret');
             
             // --- 资源与状态变量 ---
-            const dsImageUrl = 'https://i.imgur.com/PkoS1Am.png';
-            const dsVideoUrl = 'https://www.w3schools.com/html/mov_bbb.mp4';
+            const dsImageUrl = 'https://i-blog.csdnimg.cn/blog_migrate/4e09f5b14d9870b58bfe35ad2d553f43.png';
+            const dsVideoUrl = '//player.bilibili.com/player.html?bvid=BV1F44y1G7vm&page=1&high_quality=1&as_wide=1';
             const chLitImageUrl = 'https://upload.wikimedia.org/wikipedia/commons/2/2d/Chibi_by_Wu_Yuanzhi.jpg';
 
             let commandHistory = [];
@@ -117,18 +119,18 @@
 
             // --- 响应数据库 (完整版) ---
             const responses = {
-                 '1': [
+                '1': [
                     { type: 'title', text: '加载中: (一) 多模态学科知识图谱框架' }, 
                     { type: 'normal', text: '核心思想：为特定学科（如数据结构）构建一个统一的、多模态的知识框架。'},
                     { type: 'normal', text: `### 1. 构建基础框架\n- <span class="highlight">学科知识本体设计：</span>针对《数据结构》，设计包含“树”、“图”等核心概念的层次结构。\n- <span class="highlight">知识抽取：</span>利用大语言模型从教材中自动抽取实体关系，如“快速排序的时间复杂度是O(n log n)”。\n\n### 2. 多模态知识融合\n- <span class="highlight">知识表示：</span>研究将教材文本、实验图表、教学视频映射到统一向量空间。\n- <span class="highlight">实体对齐：</span>利用图神经网络，将视频中的动画片段与代码指令进行对齐。`}
-                 ],
-                 '2': [
+                ],
+                '2': [
                     { type: 'title', text: '加载中: (二) 检索增强的大语言模型生成范式' }, 
                     { type: 'normal', text: '核心思想：利用构建好的知识图谱，克服大语言模型的“幻觉”，提高生成内容的专业性和准确性。'},
                     { type: 'normal', text: `### 1. 图检索增强生成 (GraphRAG)\n- <span class="highlight">图基索引与检索：</span>当用户提问时，能从图谱中检索到全面的知识上下文。\n- <span class="highlight">上下文感知生成：</span>将检索到的知识注入大语言模型，确保生成答案的准确性。\n\n### 2. 知识嵌入机制\n- <span class="highlight">引导与推理：</span>设计思维链提示，引导大模型进行步骤化推理。\n- <span class="highlight">动态演化：</span>构建增量学习框架，动态更新知识图谱，解决知识过时问题。`}
-                 ],
-                 '3': [{ type: 'title', text: '加载中: (三) “数据结构”教学案例演示' }, { type: 'normal', text: '这是一个模拟场景，展示当学生向AI助教提问时，系统如何工作。' }, { type: 'help', text: '现在，请输入指令 <a>quicksort</a> 来模拟学生的提问。' }],
-                 'quicksort': [
+                ],
+                '3': [{ type: 'title', text: '加载中: (三) “数据结构”教学案例演示' }, { type: 'normal', text: '这是一个模拟场景，展示当学生向AI助教提问时，系统如何工作。' }, { type: 'help', text: '现在，请输入指令 <a>quicksort</a> 来模拟学生的提问。' }],
+                'quicksort': [
                     { type: 'normal', text: '接收到用户提问: "请用一个初学者能听懂的例子，解释一下什么是快速排序..."' }, 
                     { type: 'normal', text: '<span class="highlight">GraphRAG 系统启动...</span>'}, 
                     { type: 'normal', text: '1. <span class="highlight">[图检索]</span> 成功! 在“数据结构”知识图谱中检索到相关节点。'}, 
@@ -143,17 +145,16 @@
                     { type: 'help', text: '<span class="highlight">-> 请输入 <a>show image</a> 查看分区过程示意图。</span>'},
                     { type: 'help', text: '<span class="highlight">-> 请输入 <a>show video</a> 查看递归动画演示。</span>'},
                     { type: 'help', text: '<span class="highlight">-> 思考题：如果数组已经有序，快排效率如何？输入 <a>compare complexity</a> 深入了解。</span>'}
-                 ],
-                 'compare complexity': [
+                ],
+                'compare complexity': [
                     { type: 'title', text: '知识深化：快速排序的复杂度' }, 
                     { type: 'normal', text: '这是一个非常好的问题，触及了快速排序的关键弱点！' },
                     { type: 'normal', text: `如果对一个<span class="highlight">已经有序</span>（或接近有序）的数组使用基础的快速排序（比如总是选第一个或最后一个元素作基准），会发生<span class="highlight">最坏情况</span>。\n\n每次分区，都会导致一个子数组为空，另一个子数组只比原来少一个元素。这使得递归树变成一条长链，深度为n，失去了分治的优势。\n\n因此，最坏情况下的时间复杂度会退化到 **O(n²)**，和冒泡排序一样慢。\n\n为了解决这个问题，实际应用中的快速排序会采用“三数取中”或“随机选取基准”等策略来避免最坏情况的发生。`}
-                 ],
-                 'show image': [{ type: 'normal', text: '正在打开示意图...' }],
-                 'show video': [{ type: 'normal', text: '正在加载演示视频...' }],
-
-                 '4': [{ type: 'title', text: '加载中: (四) “大学语文”教学案例演示' }, { type: 'normal', text: '此场景将演示AI助教如何分析古典文学中的哲学思想。' }, { type: 'help', text: '现在，请输入指令 <a>chibifu</a> 来提问关于《前赤壁赋》的核心思想。' }],
-                 'chibifu': [
+                ],
+                'show image': [{ type: 'normal', text: '正在打开示意图...' }],
+                'show video': [{ type: 'normal', text: '正在加载演示视频...' }],
+                '4': [{ type: 'title', text: '加载中: (四) “大学语文”教学案例演示' }, { type: 'normal', text: '此场景将演示AI助教如何分析古典文学中的哲学思想。' }, { type: 'help', text: '现在，请输入指令 <a>chibifu</a> 来提问关于《前赤壁赋》的核心思想。' }],
+                'chibifu': [
                     { type: 'normal', text: '接收到用户提问: "请分析苏轼《前赤壁赋》中\'变\'与\'不变\'的哲学思想..."' },
                     { type: 'normal', text: '<span class="highlight">GraphRAG 系统启动...</span>'},
                     { type: 'normal', text: '1. <span class="highlight">[图检索]</span> 成功! 在“中国古典文学”知识图谱中检索到“苏轼”、“赤壁赋”、“道家思想”等相关节点。'},
@@ -165,21 +166,21 @@
                     { type: 'help', text: '<span class="highlight">-> 请输入 <a>show painting</a> 欣赏《赤壁赋》图。</span>' },
                     { type: 'help', text: '<span class="highlight">-> 请输入 <a>play music</a> 聆听主题古琴曲。</span>' },
                     { type: 'help', text: '<span class="highlight">-> 思考题：结合苏轼生平，这种人生观对他有何影响？输入 <a>discuss impact</a> 查看分析。</span>' }
-                 ],
-                 'show text': [ { type: 'title', text: '《前赤壁赋》核心原文' }, { type: 'normal', text: `<pre><code>客亦知夫水与月乎？\n逝者如斯，而未尝往也；\n盈虚者如彼，而卒莫消长也。\n盖将自其变者而观之，则天地曾不能以一瞬；\n自其不变者而观之，则物与我皆无尽也。</code></pre>` } ],
-                 'show painting': [{ type: 'normal', text: '正在打开《赤壁赋》相关画作...' }],
-                 'play music': [{ type: 'normal', text: '模拟播放古琴曲《秋江夜泊》，营造《赤壁赋》的宁静与旷远意境...' }],
-                 'discuss impact': [ 
+                ],
+                'show text': [ { type: 'title', text: '《前赤壁赋》核心原文' }, { type: 'normal', text: `<pre><code>客亦知夫水与月乎？\n逝者如斯，而未尝往也；\n盈虚者如彼，而卒莫消长也。\n盖将自其变者而观之，则天地曾不能以一瞬；\n自其不变者而观之，则物与我皆无尽也。</code></pre>` } ],
+                'show painting': [{ type: 'normal', text: '正在打开《赤壁赋》相关画作...' }],
+                'play music': [{ type: 'normal', text: '模拟播放古琴曲《秋江夜泊》，营造《赤壁赋》的宁静与旷远意境...' }],
+                'discuss impact': [ 
                     { type: 'title', text: '知识深化：人生观对苏轼的影响' }, 
                     { type: 'normal', text: '这个问题非常关键！这种“变与不变”的旷达人生观，是苏轼屡遭贬谪而依然能创作出大量优秀作品的<span class="highlight">精神支柱</span>。\n\n它让苏轼能够：\n1.  <strong>超越个人得失</strong>：将个人的不幸置于广阔的宇宙时空中，从而获得释然。\n2.  <strong>随缘自适</strong>：无论身处何地，都能发现生活中的美好与乐趣，即“随所遇而安”。\n3.  <strong>保持积极乐观</strong>：即使在政治上屡受打击，依然能保持豪放豁达的胸襟和对生活的热爱。' 
-                 } ],
-                 'help': [ 
+                } ],
+                'help': [ 
                     { type: 'help', text: '通用指令:' }, 
                     { type: 'help', text: '- <a>1</a> / <a>2</a> : 查看核心研究方向'}, 
                     { type: 'help', text: '- <a>3</a> : 进入“数据结构”案例'}, 
                     { type: 'help', text: '- <a>4</a> : 进入“大学语文”案例'}, 
                     { type: 'help', text: '- <a>clear</a> / <a>help</a> : 清屏 / 显示帮助'} 
-                 ]
+                ]
             };
 
             const addCopyButton = (codeBlock) => {
@@ -285,7 +286,7 @@
                         await printLine(lineInfo);
                     }
                     if (cmd === 'show image') showModal('image', dsImageUrl);
-                    if (cmd === 'show video') showModal('video', dsVideoUrl);
+                    if (cmd === 'show video') showModal('iframe', dsVideoUrl);
                     if (cmd === 'show painting') showModal('image', chLitImageUrl);
                     if (cmd === '3') inDsDemoMode = true;
                     if (cmd === 'quicksort') dsQuicksortActive = true;
@@ -302,6 +303,8 @@
                 mediaModal.classList.add('visible');
                 modalImage.style.display = 'none';
                 modalVideo.style.display = 'none';
+                modalIframe.style.display = 'none';
+
                 if (type === 'image') {
                     modalImage.style.display = 'block';
                     modalImage.src = url;
@@ -309,9 +312,17 @@
                     modalVideo.style.display = 'block';
                     modalVideo.src = url;
                     modalVideo.play();
+                } else if (type === 'iframe') {
+                    modalIframe.style.display = 'block';
+                    modalIframe.src = url;
                 }
             };
-            const closeModal = () => { mediaModal.classList.remove('visible'); modalVideo.pause(); };
+            const closeModal = () => {
+                mediaModal.classList.remove('visible');
+                modalVideo.pause();
+                modalIframe.src = ''; 
+            };
+            
             const updateCaretPosition = () => {
                 const tempSpan = document.createElement('span');
                 tempSpan.style.font = window.getComputedStyle(commandInput).font;
