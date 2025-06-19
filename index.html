@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI教学资源生成器 - 核心功能原型</title>
+    <title>“人工智能+高等教育”典型应用场景案例</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
@@ -21,7 +21,6 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             color: var(--text-color);
             line-height: 1.7;
-            /* 使用新的、科技感更强的背景图片 */
             background-image: url('./images/background_tech.png');
             background-size: cover;
             background-position: center center;
@@ -52,7 +51,7 @@
         .engine-button { display: inline-block; width: auto; padding: 12px 30px; margin-top: 15px; background-color: var(--primary-color); color: white; border: none; border-radius: 25px; cursor: pointer; font-size: 1rem; font-weight: bold; transition: all 0.3s; }
         .engine-button:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0, 170, 255, 0.3); }
         .feature-visual { min-height: 400px; display: flex; align-items: center; justify-content: center; transition: all 0.3s; }
-        .feature-visual img { max-width: 100%; border-radius: 4px; }
+        .feature-visual img, .feature-visual video { max-width: 100%; border-radius: 4px; }
         .feature-visual.loading { color: var(--primary-color); font-size: 1rem; }
         .site-footer { text-align: center; padding: 40px 20px 20px 20px; color: #666; font-size: 0.9rem; background-color: rgba(30, 30, 30, 0.7); }
         @media (max-width: 800px) {
@@ -68,7 +67,7 @@
 <body>
     <header class="header">
         <h1 class="main-title">AI教学资源生成器</h1>
-        <p class="main-subtitle">核心功能概念原型演示</p>
+        <p class="main-subtitle">“人工智能+高等教育”典型应用场景案例</p>
     </header>
     <main>
         <section class="feature-section">
@@ -76,31 +75,34 @@
                 <div class="feature-description">
                     <h2><i class="fas fa-palette icon"></i>可视化引擎 (文生图)</h2>
                     <p>输入一段描述性文字，AI即可生成高质量、符合要求的教学插图或艺术化图像。这对于需要将抽象概念具象化的学科（如物理、生物、艺术史）尤其有价值。</p>
-                    <textarea>请生成一张描绘“量子纠缠”概念的艺术化科学插图，风格需兼具科技感与美感。</textarea>
+                    <textarea>请根据诗句“落霞与孤鹜齐飞 秋水共长天一色”生成一张照片。</textarea>
                     <button class="engine-button" data-target="output-image">模拟生成图像</button>
                 </div>
                 <div class="feature-visual" id="output-image"><p style="color:var(--text-muted); text-align:center;">生成结果将显示于此</p></div>
             </div>
         </section>
+
         <section class="feature-section">
             <div class="feature-container reverse-on-mobile">
-                <div class="feature-visual" id="output-text"><p style="color:var(--text-muted); text-align:center;">解读结果将显示于此</p></div>
+                <div class="feature-visual" id="output-text"><p style="color:var(--text-muted); text-align:center;">生成结果将显示于此</p></div>
                 <div class="feature-description">
-                    <h2><i class="fas fa-file-alt icon"></i>解析引擎 (图生文)</h2>
-                    <p>上传或提供一张图片，如复杂的流程图、历史照片或实验装置图，AI能快速识别其内容，并生成结构化的文字描述、数据分析或教学要点总结。</p>
-                    <div class="input-image" style="margin-bottom: 20px; border: 1px solid var(--border-color); padding:10px; border-radius: 8px;">
-                        <img src="https://via.placeholder.com/400x200.png/1e1e1e/808080?text=待分析的复杂流程图" alt="待分析的图片" style="max-width:100%; border-radius:4px;">
+                    <h2><i class="fas fa-file-alt icon"></i>解析引擎 (图 + 文 -> 文)</h2>
+                    <p>提供一张图片，并可以附带简短的文字提示，AI将根据图像内容和提示生成相关的文字输出，例如诗歌、描述、故事等。</p>
+                    <div style="margin-bottom: 20px; border: 1px solid var(--border-color); padding:10px; border-radius: 8px; text-align: center;">
+                        <img src="./images/Image_to_text.png" alt="示例图片" style="max-width: 100%; border-radius: 4px; margin-bottom: 10px;">
+                        <p style="color: var(--text-color); font-size: 1rem; margin-bottom: 0; background-color: rgba(0,0,0,0.3); padding: 5px; border-radius: 4px;">提示: "根据这张图片生成一首诗"</p>
                     </div>
-                    <button class="engine-button" data-target="output-text">模拟解读图像</button>
+                    <button class="engine-button" data-target="output-text">模拟生成诗歌</button>
                 </div>
             </div>
         </section>
+
         <section class="feature-section">
             <div class="feature-container">
                 <div class="feature-description">
                     <h2><i class="fas fa-video icon"></i>演绎引擎 (文生视频)</h2>
                     <p>将您的课程讲义、实验步骤或一个知识点大纲输入，AI可以一键转化为配有动画、字幕和AI旁白的教学短视频，让学习过程更具沉浸感和吸引力。</p>
-                    <textarea>主题：牛顿第一定律。内容：在不受外力的情况下，物体将保持其静止或匀速直线运动的状态。</textarea>
+                    <textarea> 展示“金色雨”化学实验的实验现象</textarea>
                     <button class="engine-button" data-target="output-video">模拟生成短片</button>
                 </div>
                 <div class="feature-visual" id="output-video"><p style="color:var(--text-muted); text-align:center;">视频预览将显示于此</p></div>
@@ -108,8 +110,9 @@
         </section>
     </main>
     <footer class="site-footer">
-        <p>&copy; 2025 核心功能原型 v2.3 (科技感背景版)</p>
+        <p>&copy; 2025 “人工智能+高等教育”典型应用场景案例</p>
     </footer>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const engineButtons = document.querySelectorAll('.engine-button');
@@ -118,23 +121,33 @@
                     const targetId = this.dataset.target;
                     const outputArea = document.getElementById(targetId);
                     if (!outputArea) return;
+                    
+                    outputArea.style.textAlign = 'center'; // 重置对齐方式
                     outputArea.innerHTML = `<i class="fas fa-spinner fa-spin"></i> 正在智能生成中...`;
                     outputArea.classList.add('loading');
+
                     setTimeout(() => {
                         outputArea.classList.remove('loading');
                         let resultContent = '';
                         switch (targetId) {
                             case 'output-image':
-                                resultContent = `<img src="https://images.unsplash.com/photo-1614726365953-5308b4b74a34?q=80&w=870" alt="AI生成的量子纠缠概念图">`;
+                                resultContent = `<img src="./images/Text_to_image.png" alt="AI生成图">`;
                                 break;
                             case 'output-text':
-                                resultContent = `<p style="text-align:left; color:var(--text-color); padding: 10px;"><b>解读成功：</b><br>此图展示了植物光合作用的全过程，主要分为光反应和暗反应两个阶段。光反应在叶绿体类囊体薄膜上进行，需要光、水和叶绿素...</p>`;
+                                outputArea.style.textAlign = 'left'; // 为诗歌设置左对齐
+                                resultContent = `<div style="padding: 10px;">
+                                                   <p style="color:var(--text-color);"><b>AI 创作的诗歌：</b></p>
+                                                   <p style="color:var(--text-muted); font-style: italic;">一叶扁舟波上游，<br>远山古寺雾中楼。<br>渔翁不问江湖事，<br>一篙撑醒万古愁。</p>
+                                               </div>`;
                                 break;
                             case 'output-video':
-                                resultContent = `<div style="position:relative; width:100%; text-align:center;">
-                                                    <img src="https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=871" alt="教学短片预览" style="width:100%; border-radius:4px;">
-                                                    <i class="fas fa-play-circle" style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-size:4rem; color:rgba(255,255,255,0.85); cursor:pointer;"></i>
-                                                 </div>`;
+                                // --- 这是修改后的部分 ---
+                                // 使用<video>标签来创建一个真正的视频播放器
+                                resultContent = `<video width="100%" controls autoplay muted loop style="border-radius:4px;">
+                                                   <source src="./images/Text_to_video.mp4" type="video/mp4">
+                                                   您的浏览器不支持播放该视频。
+                                                 </video>`;
+                                // --- 修改结束 ---
                                 break;
                         }
                         outputArea.innerHTML = resultContent;
